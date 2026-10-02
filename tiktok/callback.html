@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok AutoPoster — Login Complete</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f4f5f7;
+    color: #161616;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    max-width: 560px;
+    width: 100%;
+    padding: 36px 32px;
+    text-align: center;
+  }
+  h1 { font-size: 22px; margin-bottom: 8px; }
+  h1 .ok { color: #16a34a; }
+  h1 .bad { color: #dc2626; }
+  p.sub { color: #555; font-size: 14px; margin-bottom: 20px; line-height: 1.5; }
+  .code-box {
+    background: #f0f2f5;
+    border: 1px dashed #999;
+    border-radius: 8px;
+    padding: 16px 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 15px;
+    word-break: break-all;
+    user-select: all;
+    margin-bottom: 16px;
+    color: #111;
+  }
+  .btn {
+    display: inline-block;
+    background: #161616;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 12px;
+  }
+  .btn:active { transform: scale(0.98); }
+  .copied { color: #16a34a; font-size: 13px; min-height: 18px; margin-bottom: 8px; font-weight: 600; }
+  .state-line { font-size: 12px; color: #888; margin-top: 12px; word-break: break-all; }
+  .state-line code { font-family: ui-monospace, Menlo, Consolas, monospace; }
+  .error-box {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    padding: 16px;
+    color: #991b1b;
+    font-size: 14px;
+    margin-bottom: 16px;
+    word-break: break-word;
+    text-align: left;
+  }
+  .hint {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #333;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    padding: 12px;
+    border-radius: 8px;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+  <div class="card" id="card">
+    <h1 id="heading">TikTok AutoPoster — Login Complete</h1>
+    <p class="sub" id="subtitle">Apna authorization code neeche se copy karein.</p>
+    <div id="content"></div>
+    <div class="hint">Ye code copy kar ke <b>Jin</b> ko bhej dein.</div>
+    <div class="state-line" id="stateLine" style="display:none;">state: <code id="stateVal"></code></div>
+  </div>
+<script>
+  function parseCallbackParams(queryString) {
+    var qs = queryString.charAt(0) === '?' ? queryString.slice(1) : queryString;
+    var p = new URLSearchParams(qs);
+    return {
+      code: p.get('code'),
+      state: p.get('state'),
+      error: p.get('error'),
+      error_description: p.get('error_description')
+    };
+  }
+  function copyText(text, done) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { done(true); }, function () { fallbackCopy(text, done); });
+    } else {
+      fallbackCopy(text, done);
+    }
+  }
+  function fallbackCopy(text, done) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'absolute';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    done(ok);
+  }
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    var params = parseCallbackParams(window.location.search);
+    var content = document.getElementById('content');
+    var heading = document.getElementById('heading');
+    var subtitle = document.getElementById('subtitle');
+    var copied = null;
+    if (params.error) {
+      heading.innerHTML = 'TikTok AutoPoster — <span class="bad">Login Failed</span>';
+      subtitle.textContent = 'TikTok ne authorization se inkar kar diya ya koi error aaya.';
+      var desc = params.error_description ? '<br><br>' + esc(params.error_description) : '';
+      content.innerHTML = '<div class="error-box"><b>Error:</b> ' + esc(params.error) + desc + '</div>';
+    } else if (params.code) {
+      content.innerHTML =
+        '<div class="code-box" id="codeBox">' + esc(params.code) + '</div>' +
+        '<button class="btn" id="copyBtn">Copy Code</button>' +
+        '<div class="copied" id="copiedMsg"></div>';
+      copied = document.getElementById('copiedMsg');
+      document.getElementById('copyBtn').addEventListener('click', function () {
+        copyText(params.code, function (ok) {
+          copied.textContent = ok ? 'Copied!' : 'Copy nahi hua — code ko manually select kar ke copy karein.';
+        });
+      });
+    } else {
+      heading.innerHTML = 'TikTok AutoPoster — <span class="bad">No Code Found</span>';
+      subtitle.textContent = 'URL me authorization code nahi mila. Dobara login ki koshish karein.';
+      content.innerHTML = '<div class="error-box">Koi <b>code</b> ya <b>error</b> parameter nahi mila.</div>';
+    }
+    if (params.state) {
+      document.getElementById('stateLine').style.display = 'block';
+      document.getElementById('stateVal').textContent = params.state;
+    }
+    window.__callbackParams = params;
+  });
+</script>
+</body>
+</html>
