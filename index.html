@@ -1,17 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TikTok AutoPoster — Legal</title>
-<style>body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:760px;margin:0 auto;padding:24px;line-height:1.6;color:#1a1a1a}ul{margin-top:1em}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok AutoPoster</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: #f4f5f7; color: #161616; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center; padding: 20px;
+  }
+  .card {
+    background: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    max-width: 560px; width: 100%; padding: 40px 32px; text-align: center;
+  }
+  .logo { width: 96px; height: 96px; border-radius: 22px; margin-bottom: 16px; }
+  h1 { font-size: 26px; margin-bottom: 8px; }
+  p.sub { color: #555; font-size: 15px; margin-bottom: 24px; line-height: 1.6; }
+  .btn {
+    display: inline-block; background: #161616; color: #fff; border: none;
+    border-radius: 10px; padding: 14px 36px; font-size: 16px; font-weight: 700;
+    cursor: pointer; text-decoration: none; margin-bottom: 24px;
+  }
+  .steps { text-align: left; background: #f8f9fb; border-radius: 12px; padding: 20px 22px; margin-bottom: 20px; }
+  .steps h3 { font-size: 15px; margin-bottom: 12px; }
+  .steps ol { padding-left: 20px; font-size: 14px; color: #333; line-height: 2; }
+  .foot { font-size: 12px; color: #888; }
+  .foot a { color: #555; }
+</style>
 </head>
 <body>
-<h1>TikTok AutoPoster</h1>
-<p>Legal documents for the TikTok AutoPoster Android app:</p>
-<ul>
-<li><a href="tos.html">Terms of Service</a></li>
-<li><a href="privacy.html">Privacy Policy</a></li>
-</ul>
+  <div class="card">
+    <img class="logo" src="https://amenk6843-ctrl.github.io/tiktok-autoposter-legal/icon.png" alt="TikTok AutoPoster">
+    <h1>TikTok AutoPoster</h1>
+    <p class="sub">Apne Google Drive folder se videos automatically apne TikTok drafts me bhejein. Schedule set karein — baqi kaam khud ho jayega.</p>
+    <a class="btn" id="connectBtn" href="#">Connect TikTok Account</a>
+    <div class="steps">
+      <h3>Kaise kaam karta hai:</h3>
+      <ol>
+        <li><b>Connect:</b> Button dabayein aur TikTok me Allow karein.</li>
+        <li><b>Schedule:</b> Apne Drive folder ka link aur timing set karein.</li>
+        <li><b>Drafts:</b> Videos TikTok inbox me draft ban kar aayengi — aap TikTok app me Post dabayein.</li>
+      </ol>
+    </div>
+    <p class="foot"><a href="tos.html">Terms of Service</a> &middot; <a href="privacy.html">Privacy Policy</a></p>
+  </div>
+<script>
+  var CLIENT_KEY = "aw8fsj06bmjyfyu2";
+  var REDIRECT_URI = "https://amenk6843-ctrl.github.io/tiktok-autoposter-legal/tiktok/callback.html";
+  var SCOPES = "user.info.basic,video.upload";
+  document.getElementById("connectBtn").addEventListener("click", function (e) {
+    e.preventDefault();
+    var state = "web-" + Math.random().toString(36).slice(2, 12);
+    var url = "https://www.tiktok.com/v2/auth/authorize/?" +
+      "client_key=" + encodeURIComponent(CLIENT_KEY) +
+      "&scope=" + encodeURIComponent(SCOPES) +
+      "&response_type=code" +
+      "&redirect_uri=" + encodeURIComponent(REDIRECT_URI) +
+      "&state=" + encodeURIComponent(state);
+    window.location.href = url;
+  });
+</script>
 </body>
 </html>
